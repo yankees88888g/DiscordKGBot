@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.yankees88888g.APIObjects.nations.Nation;
 import com.yankees88888g.APIObjects.residents.Resident;
 import com.yankees88888g.APIObjects.towns.Town;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,9 +29,10 @@ public class ReadAPI {
     static Type listType = new TypeToken<List<String>>(){}.getType();
     static String domain = "https://api.earthmc.net/v2/aurora/";
 
-    public static Object readAPI(String type, String data) throws IOException {
-        return switch (type) {
-            case "res" -> readResident(data);
+    @SuppressWarnings("unchecked")
+    public static <T> T readAPI(@NotNull String type, String data) throws IOException {
+        return (T) switch (type) {
+            case "res" ->  readResident(data);
             case "town" -> readTown(data);
             case "nation" -> readNation(data);
             case "residents" -> readResidents();
