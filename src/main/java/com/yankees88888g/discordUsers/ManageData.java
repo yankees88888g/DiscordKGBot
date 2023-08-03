@@ -21,7 +21,7 @@ public class ManageData {
         Gson g = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(messageIDs);
         FileWriter fileWriter = new FileWriter(usersFile);
-        fileWriter.write(g.toJson(new DiscordUser(username, user.getId(), null, null,  messageIDs,true, true, true)));
+        fileWriter.write(g.toJson(new DiscordUser(username, user.getId(), null, null,  messageIDs,true, true, true, false)));
         fileWriter.close();
     }
 
@@ -35,10 +35,10 @@ public class ManageData {
                 if(discordUser.tracking == null){
                     List<String> newTrackingList = new ArrayList<>();
                     newTrackingList.add(player);
-                    trackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), newTrackingList, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
+                    trackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), newTrackingList, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 } else {
                     discordUser.tracking.add(player);
-                    trackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
+                    trackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 }
                 trackingWriter.close();
                 break;
@@ -47,31 +47,30 @@ public class ManageData {
                 if (discordUser.protecting == null){
                     List<String> newProtectingList = new ArrayList<>();
                     newProtectingList.add(player);
-                    protectingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, newProtectingList, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
+                    protectingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, newProtectingList, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 } else {
                     discordUser.protecting.add(player);
-                    protectingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
                 }
                 protectingWriter.close();
                 break;
             case "toggleTracking":
                 FileWriter toggleTrackingWriter = new FileWriter(usersFile);
-                toggleTrackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, !discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
+                toggleTrackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, !discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 toggleTrackingWriter.close();
                 break;
             case "toggleProtecting":
                 FileWriter toggleProtectingWriter = new FileWriter(usersFile);
-                toggleProtectingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, !discordUser.toggleableProtecting, discordUser.editMessage)));
+                toggleProtectingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, !discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 toggleProtectingWriter.close();
                 break;
             case "toggleMessageEditing":
                 FileWriter toggleMessageWriter = new FileWriter(usersFile);
-                toggleMessageWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, !discordUser.editMessage)));
+                toggleMessageWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, !discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 toggleMessageWriter.close();
                 break;
             case "toggleEditableMessage":
                 FileWriter toggleEditableWriter = new FileWriter(usersFile);
-                toggleEditableWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, ids, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
+                toggleEditableWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, ids, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 toggleEditableWriter.close();
                 break;
         }
@@ -96,6 +95,7 @@ public class ManageData {
             case "toggleableTracking" -> discordUser.toggleableTracking;
             case "toggleableProtecting" -> discordUser.toggleableProtecting;
             case "toggleableEditing" -> discordUser.editMessage;
+            case "unknownLocationUpdates" -> discordUser.unknownLocationUpdates;
             default -> null;
         };
     }
@@ -124,13 +124,13 @@ public class ManageData {
             case "track":
                 FileWriter trackingWriter = new FileWriter(usersFile);
                 discordUser.tracking.remove(player);
-                trackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
+                trackingWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 trackingWriter.close();
                 break;
             case "protect":
                 FileWriter protectWriter = new FileWriter(usersFile);
                 discordUser.protecting.remove(player);
-                protectWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage)));
+                protectWriter.write(g.toJson(new DiscordUser(discordUser.username, user.getId(), discordUser.tracking, discordUser.protecting, discordUser.editableMessage, discordUser.toggleableTracking, discordUser.toggleableProtecting, discordUser.editMessage, discordUser.unknownLocationUpdates)));
                 protectWriter.close();
                 break;
         }

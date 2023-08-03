@@ -12,8 +12,9 @@ public class DiscordUser {
     public boolean toggleableTracking;
     public boolean toggleableProtecting;
     public boolean editMessage;
+    public boolean unknownLocationUpdates;
 
-    public DiscordUser(String username, String discordID, List<String> tracking, List<String> protecting, List<String> editableMessage, boolean toggleableTracking, boolean toggleableProtecting, boolean editMessage) {
+    public DiscordUser(String username, String discordID, List<String> tracking, List<String> protecting, List<String> editableMessage, boolean toggleableTracking, boolean toggleableProtecting, boolean editMessage, boolean unknownLocationUpdates) {
         this.username = username;
         this.discordID = discordID;
         this.tracking = tracking;
@@ -22,5 +23,6 @@ public class DiscordUser {
         this.toggleableProtecting = toggleableProtecting;
         this.editableMessage = editableMessage;
         this.editMessage = editMessage;
+        this.unknownLocationUpdates = unknownLocationUpdates;
     }
 }
