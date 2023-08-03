@@ -6,10 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.yankees88888g.APIObjects.Coordinates;
 import com.yankees88888g.readAPI.GetPlayersData;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
@@ -17,12 +14,8 @@ public class Cache {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    /*public static void main(String[] args) throws IOException {
-        createCache();
-    }*/
     public static void createCache() throws IOException {
-        File file = new File("cache.json");
-        FileWriter writer = new FileWriter(file);
+        FileWriter writer = new FileWriter(getFile());
         HashMap<String, Coordinates> coordinatesList = new HashMap<>();
 
         for (Coordinates coordinates : GetPlayersData.getPlayersData().values()) {
@@ -35,12 +28,12 @@ public class Cache {
     }
 
     public static void updateCache() throws IOException {
-        File file = new File("cache.json");
         Type playerListType = new TypeToken<HashMap<String, Coordinates>>() {}.getType();
 
-        HashMap<String, Coordinates> coordinatesList = gson.fromJson(new FileReader("cache.json"), playerListType);
+        HashMap<String, Coordinates> coordinatesList = gson.fromJson(new FileReader(getFile()), playerListType);
+        System.out.println(coordinatesList.get("yankees88888g").x);
 
-        FileWriter writer = new FileWriter(file);
+        FileWriter writer = new FileWriter(getFile());
 
         HashMap<String, Coordinates> playersCoords = GetPlayersData.getPlayersData();
 
@@ -52,5 +45,16 @@ public class Cache {
         }
         writer.write(gson.toJson(coordinatesList));
         writer.close();
+    }
+
+    public static Coordinates getFromCache(String name) throws FileNotFoundException {
+        Type playerListType = new TypeToken<HashMap<String, Coordinates>>() {}.getType();
+
+        HashMap<String, Coordinates> coordinatesList = gson.fromJson(new FileReader(getFile()), playerListType);
+        return coordinatesList.get(name);
+    }
+
+    private static File getFile(){
+        return new File("cache.json");
     }
 }

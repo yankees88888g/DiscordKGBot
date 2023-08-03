@@ -71,7 +71,7 @@ public class Main extends ListenerAdapter {
         jda.awaitReady();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
 
-        int delayInSeconds = 30; //adjustable
+        int delayInSeconds = 10; //adjustable
 
         ScheduledFuture<?> trackingFuture = scheduler.scheduleAtFixedRate(() -> TrackingPlayers.trackPlayers(jda), 0, delayInSeconds, TimeUnit.SECONDS);
         ScheduledFuture<?> protectingFuture = scheduler.scheduleAtFixedRate(() -> ProtectingPlayers.protectPlayers(jda), 0, delayInSeconds, TimeUnit.SECONDS);

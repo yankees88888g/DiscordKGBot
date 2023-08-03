@@ -49,7 +49,7 @@ public class ProtectingPlayers {
                                     ));
                                 } else {
                                     stringBuilder.append("The player you are protecting, ")
-                                            .append(s).append(", is offline");
+                                            .append(s).append(", is offline\n");
                                 }
                             }
 

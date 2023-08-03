@@ -2,6 +2,7 @@ package com.yankees88888g.readAPI;
 
 import com.yankees88888g.APIObjects.Coordinates;
 import com.yankees88888g.BotActions;
+import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.discordUsers.ManageData;
 import net.dv8tion.jda.api.JDA;
 
@@ -41,18 +42,25 @@ public class TrackingPlayers {
                                         stringBuilder.append(coordinates.name).append(" is at x= ")
                                                 .append(coordinates.x).append(" y= ")
                                                 .append(coordinates.y).append(" z= ")
-                                                .append(coordinates.z).append("\n");
+                                                .append(coordinates.z).append("<t:").append(coordinates.unixTime).append(":R>").append("\n").append("\n");
                                     } else {
-                                        stringBuilder.append(coordinates.name)
+                                        if (ManageData.readToggles(file, "unknownLocationUpdates")){
+                                            stringBuilder.append(coordinates.name)
                                                 .append(" is underground")
                                                 .append("\n");
+                                        } else {
+                                            Coordinates cachedCoordinates = Cache.getFromCache(coordinates.name);
+                                            stringBuilder.append(cachedCoordinates.name).append(" was last visualable at x= ")
+                                                    .append(cachedCoordinates.x).append(" y= ")
+                                                    .append(cachedCoordinates.y).append(" z= ")
+                                                    .append(cachedCoordinates.z).append("<t:").append(cachedCoordinates.unixTime).append(":R>").append("\n");
+                                        }
                                     }
                                 } else {
                                     stringBuilder.append(s).append(" is offline").append("\n");
                                 }
                             }
 
-                            System.out.println(stringBuilder);
                             BotActions.sendDMUpdates(jda, ManageData.getId(file), stringBuilder.toString(), file, ManageData.readToggles(file, "toggleableEditing"), "track");
                         }
                     } catch (IOException e) { throw new RuntimeException(e); }
