@@ -2,11 +2,13 @@ package com.yankees88888g.readAPI;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.yankees88888g.APIObjects.nations.Nation;
 import com.yankees88888g.APIObjects.residents.Resident;
 import com.yankees88888g.APIObjects.towns.Town;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,88 +24,59 @@ public class ReadAPI {
             throw new RuntimeException(e);
         }
     }*/
-    public static Object readAPI(String type, String data) throws IOException {
-        switch (type) {
-            case "res":
-                return readResident(data);
-            case "town":
-                return readTown(data);
-            case "nation":
-                return readNation(data);
-            case "residents" :
-                return readResidents();
-            case "towns" :
-                return readTowns();
-            case "nations" :
-                return readNations();
 
-        }
-        return null;
+    static Gson gson = new Gson();
+    static Type listType = new TypeToken<List<String>>(){}.getType();
+    static String domain = "https://api.earthmc.net/v2/aurora/";
+
+    @SuppressWarnings("unchecked")
+    public static <T> T readAPI(@NotNull String type, String data) throws IOException {
+        return (T) switch (type) {
+            case "res" ->  readResident(data);
+            case "town" -> readTown(data);
+            case "nation" -> readNation(data);
+            case "residents" -> readResidents();
+            case "towns" -> readTowns();
+            case "nations" -> readNations();
+            default -> null;
+        };
     }
-    private static Resident readResident(String username) throws IOException {
-        URL url = new URL("https://api.earthmc.net/v2/aurora/residents/" + username);
 
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        JsonObject jsonObject = new Gson().fromJson(reader, JsonObject.class);
-        Gson g = new Gson();
-        Resident resident = g.fromJson(jsonObject, Resident.class);
-        System.out.println(resident.name);
-        return resident;
+    private static Resident readResident(String name) throws IOException {
+        return asObject(parse("residents/" + name, JsonObject.class), Resident.class);
     }
 
     private static Town readTown(String name) throws IOException {
-        URL url = new URL("https://api.earthmc.net/v2/aurora/towns/" + name);
-
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        JsonObject jsonObject = new Gson().fromJson(reader, JsonObject.class);
-        Gson g = new Gson();
-        Town town = g.fromJson(jsonObject, Town.class);
-        System.out.println(town.name);
-        return town;
+        return asObject(parse("towns/" + name, JsonObject.class), Town.class);
     }
 
-
     private static Nation readNation(String name) throws IOException {
-        URL url = new URL("https://api.earthmc.net/v2/aurora/nations/" + name);
-
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        JsonObject jsonObject = new Gson().fromJson(reader, JsonObject.class);
-        Gson g = new Gson();
-        Nation nation = g.fromJson(jsonObject, Nation.class);
-        System.out.println(nation.name);
-        return nation;
+        return asObject(parse("nations/" + name, JsonObject.class), Nation.class);
     }
 
     private static List<String> readResidents() throws IOException {
-        URL url = new URL("https://api.earthmc.net/v2/aurora/lists/residents/");
-
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        JsonArray jsonObject = new Gson().fromJson(reader, JsonArray.class);
-        Gson g = new Gson();
-        Type listType = new TypeToken<List<String>>(){}.getType();
-        List<String> residents = g.fromJson(jsonObject, listType);
-        return residents;
+        return asList(parse("lists/residents/", JsonArray.class));
     }
 
     private static List<String> readTowns() throws IOException {
-        URL url = new URL("https://api.earthmc.net/v2/aurora/lists/towns/");
-
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        JsonArray jsonObject = new Gson().fromJson(reader, JsonArray.class);
-        Gson g = new Gson();
-        Type listType = new TypeToken<List<String>>(){}.getType();
-        List<String> towns = g.fromJson(jsonObject, listType);
-        return towns;
+        return asList(parse("lists/towns/", JsonArray.class));
     }
 
     private static List<String> readNations() throws IOException {
-        URL url = new URL("https://api.earthmc.net/v2/aurora/lists/nations/");
+        return asList(parse("lists/nations", JsonArray.class));
+    }
 
+    private static JsonElement parse(String endpoint, Class<? extends JsonElement> clazz) throws IOException {
+        URL url = new URL(domain + endpoint);
         InputStreamReader reader = new InputStreamReader(url.openStream());
-        JsonArray jsonObject = new Gson().fromJson(reader, JsonArray.class);
-        Gson g = new Gson();
-        Type listType = new TypeToken<List<String>>(){}.getType();
-        List<String> nations = g.fromJson(jsonObject, listType);
-        return nations;
+        return gson.fromJson(reader, clazz);
+    }
+
+    private static List<String> asList(JsonElement obj) {
+        return gson.fromJson(obj, listType);
+    }
+
+    private static <T> T asObject(JsonElement obj, Class<T> customClass) {
+        return gson.fromJson(obj, customClass);
     }
 }

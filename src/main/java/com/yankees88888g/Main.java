@@ -166,68 +166,61 @@ public class Main extends ListenerAdapter {
                 }
                 try {
                     ManageData.editData(user, usersFile, "toggleEditableMessage", null,
-                            BotActions.sendDMUpdates(event.getJDA(), user.getId(), "ok", null, false,"null"));
+                            BotActions.sendDMUpdates(event.getJDA(), user.getId(), "ok", null, false, "null"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
         }
     }
+
     private static String replyingAList(List<String> list){
-        if(list == null){
+        if (list == null){
             return "null";
         } else {
             StringBuilder string = new StringBuilder();
-            for(int i = 0; i <= list.size()-1; i++){
-                string.append(list.get(i) + "\n");
+            int len = list.size() - 1;
+
+            for(int i = 0; i <= len; i++){
+                string.append(list.get(i)).append("\n");
             }
             System.out.println(string);
             return string.toString();
         }
     }
 
-
-
     private static void getAllData() throws IOException {
-
         HashMap<String, Resident> residentHashMap = new HashMap<>();
         HashMap<String, Town> townHashMap = new HashMap<>();
         HashMap<String, Nation> nationHashMap = new HashMap<>();
 
-
-        List<String> residents = (List<String>) ReadAPI.readAPI("residents", null);
+        List<String> residents = ReadAPI.readAPI("residents", null);
         for (String s : residents) {
             try {
-                Resident resident = (Resident) ReadAPI.readAPI("res", s);
+                Resident resident = ReadAPI.readAPI("res", s);
                 residentHashMap.put(resident.name, resident);
                 Thread.sleep(125);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
         System.out.println(residentHashMap.get("yankees88888g").stats.balance);
-        List<String> towns = (List<String>) ReadAPI.readAPI("towns", null);
+        List<String> towns = ReadAPI.readAPI("towns", null);
         for (String s : towns) {
             try {
-                Town town = (Town) ReadAPI.readAPI("town", s);
+                Town town = ReadAPI.readAPI("town", s);
                 townHashMap.put(town.name, town);
                 Thread.sleep(125);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-        List<String> nations = (List<String>) ReadAPI.readAPI("nations", null);
+        List<String> nations = ReadAPI.readAPI("nations", null);
         for (String s : nations) {
             try {
-                Nation nation = (Nation) ReadAPI.readAPI("nation", s);
+                Nation nation = ReadAPI.readAPI("nation", s);
                 nationHashMap.put(nation.name, nation);
                 Thread.sleep(125);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
