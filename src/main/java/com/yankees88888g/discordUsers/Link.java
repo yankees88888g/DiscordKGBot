@@ -1,6 +1,8 @@
 package com.yankees88888g.discordUsers;
 
 import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +22,12 @@ public class Link {
         getFile(user).delete();
     }
 
-    public static File getFile(User user){
+    @NotNull
+    @Contract("_ -> new")
+    public static File getFile(@NotNull User user){
         return new File("discordUsers/" + user.getId() + ".json");
     }
+
     private static boolean checkIfUsernameIsAlreadyBeingUsed(){
         return false;
     }

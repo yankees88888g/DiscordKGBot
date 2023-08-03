@@ -21,18 +21,16 @@ public class ProtectingPlayers {
     }
 
     public static void protectPlayers(JDA jda, Integer radius) {
-        HashMap<String, Coordinates> playersCoordinates = GetPlayersData.getPlayersData();
-
         File directory = new File("discordUsers/");
-
         if (!directory.isDirectory()) {
             System.out.println("The specified path is not a directory.");
             return;
         }
 
         File[] files = directory.listFiles();
-
         if (files != null) {
+            HashMap<String, Coordinates> playersCoordinates = GetPlayersData.getPlayersData();
+
             // Process each file in the directory
             for (File file : files) {
                 if (file.isFile()) {
