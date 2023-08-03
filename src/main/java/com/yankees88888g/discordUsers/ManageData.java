@@ -65,6 +65,11 @@ public class ManageData {
                     ));
                 } else {
                     discordUser.protecting.add(player);
+                    writer.write(serializeUser(discordUser.username, user.getId(),
+                            discordUser.tracking, discordUser.protecting, discordUser.editableMessage,
+                            discordUser.toggleableTracking, discordUser.toggleableProtecting,
+                            discordUser.editMessage, discordUser.unknownLocationUpdates
+                    ));
                 }
             }
             case "toggleTracking" -> writer.write(
