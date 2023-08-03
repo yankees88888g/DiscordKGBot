@@ -17,14 +17,6 @@ import java.net.URL;
 import java.util.List;
 
 public class ReadAPI {
-    /*public static void main(String[] args) {
-        try {
-            readAPI("residents", "paramaribo");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
     static Gson gson = new Gson();
     static Type listType = new TypeToken<List<String>>(){}.getType();
     static String domain = "https://api.earthmc.net/v2/aurora/";

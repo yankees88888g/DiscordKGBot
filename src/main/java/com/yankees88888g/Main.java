@@ -6,7 +6,6 @@ import com.yankees88888g.APIObjects.residents.Resident;
 import com.yankees88888g.APIObjects.towns.Town;
 import com.yankees88888g.discordUsers.Link;
 import com.yankees88888g.discordUsers.ManageData;
-import com.yankees88888g.readAPI.GetPlayersData;
 import com.yankees88888g.readAPI.ProtectingPlayers;
 import com.yankees88888g.readAPI.ReadAPI;
 import com.yankees88888g.readAPI.TrackingPlayers;
@@ -17,10 +16,15 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +44,7 @@ public class Main extends ListenerAdapter {
                 .setActivity(Activity.playing("Supporting the Revolution"))
                 .setStatus(OnlineStatus.ONLINE)
                 .build();
+
         jda.updateCommands().addCommands(
                 Commands.slash("ping", "Calculate ping of the bot"),
                 //Commands.slash("res", "Calculate res"),
@@ -59,10 +64,10 @@ public class Main extends ListenerAdapter {
                 Commands.slash("toggletracking", "toggle tracking"),
                 Commands.slash("toggleprotecting", "toggle protecting"),
                 Commands.slash("togglemessageediting", "toggle message editing")
-                ).queue();
+        ).queue();
+
         jda.awaitReady();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-
 
         int delayInSeconds = 30; //adjustable
 
@@ -71,110 +76,92 @@ public class Main extends ListenerAdapter {
         //getAllData();
     }
 
+    private void editData(SlashCommandInteractionEvent event, String type) {
+        editData(event, type, null);
+    }
 
+    private void editData(@NotNull SlashCommandInteractionEvent event, String type, List<String> ids) {
+        User user = event.getUser();
+        File file = Link.getFile(user);
 
+        try {
+            OptionMapping option = event.getOption("username");
+            String player = option == null ? null : option.getAsString();
+
+            ManageData.editData(user, file, type, player, ids);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void replyWithList(SlashCommandInteractionEvent event, String type) {
+        try {
+            event.reply(replyingAList(ManageData.readData(Link.getFile(event.getUser()), type))).queue();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         // make sure we handle the right command
         switch (event.getName()) {
-            case "ping":
+            case "ping" -> {
                 long time = System.currentTimeMillis();
-                event.reply("Pong!").setEphemeral(true) // reply or acknowledge
-                        .flatMap(v ->
-                                event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time) // then edit original
-                        ).queue(); // Queue both reply and edit
-                break;
-            case "people":
-                event.reply("Fight for the workers").queue();
-                break;
-            case "link":
+
+                // reply or acknowledge
+                event.reply("Pong!").setEphemeral(true).flatMap(v ->
+                    // then edit original
+                    event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)
+                ).queue(); // Queue both reply and edit
+            }
+            case "people" -> event.reply("Fight for the workers").queue();
+            case "link" -> {
                 try {
                     Link.link(event.getUser(), event.getOption("username").getAsString(),
                             BotActions.sendDMUpdates(event.getJDA(), event.getUser().getId(), "ok", null, null, ""));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                //event.reply("hi").queue();
-                break;
-            case "unlink":
-                Link.unlink(event.getUser());
-                break;
-            case "track":
-                try {
-                    ManageData.editData(event.getUser(), Link.getFile(event.getUser()), "track", event.getOption("username").getAsString(), null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "tracklist":
-                try {
-                    event.reply(replyingAList(ManageData.readData(Link.getFile(event.getUser()), "track"))).queue();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "protectlist":
-                try {
-                    event.reply(replyingAList(ManageData.readData(Link.getFile(event.getUser()), "protect"))).queue();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "protect":
-                try {
-                     ManageData.editData(event.getUser(), Link.getFile(event.getUser()), "protect", event.getOption("username").getAsString(), null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "untrack":
+            }
+            case "unlink" -> Link.unlink(event.getUser());
+            case "track" -> editData(event, "track");
+            case "protect" -> editData(event, "protect");
+            case "tracklist" -> replyWithList(event, "track");
+            case "protectlist" -> replyWithList(event, "protect");
+            case "untrack" -> {
                 try {
                     ManageData.deleteData(event.getUser(), Link.getFile(event.getUser()), "track", event.getOption("username").getAsString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                break;
-            case "unprotect":
+            }
+            case "unprotect" -> {
                 try {
                     ManageData.deleteData(event.getUser(), Link.getFile(event.getUser()), "protect", event.getOption("username").getAsString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                break;
-            case "toggletracking":
-                try {
-                    ManageData.editData(event.getUser(), Link.getFile(event.getUser()), "toggleTracking", null, null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "toggleprotecting":
-                try {
-                    ManageData.editData(event.getUser(), Link.getFile(event.getUser()), "toggleProtecting", null, null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case "togglemessageediting" :
+            }
+            case "toggletracking" -> editData(event, "toggleTracking", null);
+            case "toggleprotecting" -> editData(event, "toggleProtecting", null);
+            case "togglemessageediting" -> {
                 User user = event.getUser();
-                File usersFile = Link.getFile(user);
+                editData(event, "toggleMessageEditing", null);
+
                 try {
-                    ManageData.editData(user, usersFile, "toggleMessageEditing", null, null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    List<String> updates = BotActions.sendDMUpdates(event.getJDA(), user.getId(), "ok", null, false, "null");
+                    editData(event, "toggleEditableMessage", updates);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                try {
-                    ManageData.editData(user, usersFile, "toggleEditableMessage", null,
-                            BotActions.sendDMUpdates(event.getJDA(), user.getId(), "ok", null, false, "null"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            }
         }
     }
 
-    private static String replyingAList(List<String> list){
-        if (list == null){
+    @NotNull
+    private static String replyingAList(List<String> list) {
+        if (list == null) {
             return "null";
         } else {
             StringBuilder string = new StringBuilder();
@@ -183,7 +170,7 @@ public class Main extends ListenerAdapter {
             for(int i = 0; i <= len; i++){
                 string.append(list.get(i)).append("\n");
             }
-            System.out.println(string);
+
             return string.toString();
         }
     }
@@ -194,36 +181,38 @@ public class Main extends ListenerAdapter {
         HashMap<String, Nation> nationHashMap = new HashMap<>();
 
         List<String> residents = ReadAPI.readAPI("residents", null);
-        for (String s : residents) {
+        residents.parallelStream().forEach(res -> {
             try {
-                Resident resident = ReadAPI.readAPI("res", s);
+                Resident resident = ReadAPI.readAPI("res", res);
                 residentHashMap.put(resident.name, resident);
-                Thread.sleep(125);
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
-        System.out.println(residentHashMap.get("yankees88888g").stats.balance);
+        });
+
         List<String> towns = ReadAPI.readAPI("towns", null);
-        for (String s : towns) {
+        towns.parallelStream().forEach(t -> {
             try {
-                Town town = ReadAPI.readAPI("town", s);
-                townHashMap.put(town.name, town);
-                Thread.sleep(125);
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+                Town town = ReadAPI.readAPI("town", t);
+                synchronized (townHashMap) {
+                    townHashMap.put(town.name, town);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
+        });
+
         List<String> nations = ReadAPI.readAPI("nations", null);
-        for (String s : nations) {
+        nations.parallelStream().forEach(n -> {
             try {
-                Nation nation = ReadAPI.readAPI("nation", s);
-                nationHashMap.put(nation.name, nation);
-                Thread.sleep(125);
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+                Nation nation = ReadAPI.readAPI("nation", n);
+                synchronized (nationHashMap) {
+                    nationHashMap.put(nation.name, nation);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
+        });
 
         Gson gson = new Gson();
 
@@ -232,14 +221,14 @@ public class Main extends ListenerAdapter {
         String jsonStringTowns = gson.toJson(townHashMap);
         String jsonStringNations = gson.toJson(nationHashMap);
 
-        try (FileWriter fileWriter = new FileWriter("outputResidents.json")) {
-            fileWriter.write(jsonStringResidents);
-        }
-        try (FileWriter fileWriter = new FileWriter("outputTowns.json")) {
-            fileWriter.write(jsonStringTowns);
-        }
-        try (FileWriter fileWriter = new FileWriter("outputNations.json")) {
-            fileWriter.write(jsonStringNations);
+        writeToFile("outputResidents.json", jsonStringResidents);
+        writeToFile("outputTowns.json", jsonStringTowns);
+        writeToFile("outputNations.json", jsonStringNations);
+    }
+
+    private static void writeToFile(String filePath, String data) throws IOException {
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            fileWriter.write(data);
         }
     }
 }
