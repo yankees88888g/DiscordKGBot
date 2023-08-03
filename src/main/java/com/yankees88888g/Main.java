@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.yankees88888g.APIObjects.nations.Nation;
 import com.yankees88888g.APIObjects.residents.Resident;
 import com.yankees88888g.APIObjects.towns.Town;
+import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.discordUsers.Link;
 import com.yankees88888g.discordUsers.ManageData;
 import com.yankees88888g.readAPI.ProtectingPlayers;
@@ -66,13 +67,22 @@ public class Main extends ListenerAdapter {
                 Commands.slash("togglemessageediting", "toggle message editing")
         ).queue();
 
+        Cache.createCache();
         jda.awaitReady();
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
 
         int delayInSeconds = 30; //adjustable
 
         ScheduledFuture<?> trackingFuture = scheduler.scheduleAtFixedRate(() -> TrackingPlayers.trackPlayers(jda), 0, delayInSeconds, TimeUnit.SECONDS);
         ScheduledFuture<?> protectingFuture = scheduler.scheduleAtFixedRate(() -> ProtectingPlayers.protectPlayers(jda), 0, delayInSeconds, TimeUnit.SECONDS);
+        ScheduledFuture<?> cacheFuture = scheduler.scheduleAtFixedRate(() -> {
+            try {
+                Cache.updateCache();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }, 0, delayInSeconds, TimeUnit.SECONDS);
+
         //getAllData();
     }
 
