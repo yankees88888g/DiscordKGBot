@@ -181,25 +181,26 @@ public class Main extends ListenerAdapter {
         HashMap<String, Nation> nationHashMap = new HashMap<>();
 
         List<String> residents = ReadAPI.readAPI("residents", null);
-        for (String s : residents) {
+        residents.parallelStream().forEach(res -> {
             try {
-                Resident resident = ReadAPI.readAPI("res", s);
+                Resident resident = ReadAPI.readAPI("res", res);
                 residentHashMap.put(resident.name, resident);
-
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
-        }
+        });
 
         List<String> towns = ReadAPI.readAPI("towns", null);
-        for (String s : towns) {
+        towns.parallelStream().forEach(t -> {
             try {
-                Town town = ReadAPI.readAPI("town", s);
-                townHashMap.put(town.name, town);
+                Town town = ReadAPI.readAPI("town", t);
+                synchronized (townHashMap) {
+                    townHashMap.put(town.name, town);
+                }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
-        }
+        });
 
         List<String> nations = ReadAPI.readAPI("nations", null);
         nations.parallelStream().forEach(n -> {
@@ -209,7 +210,7 @@ public class Main extends ListenerAdapter {
                     nationHashMap.put(nation.name, nation);
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         });
 
