@@ -71,7 +71,7 @@ public class Main extends ListenerAdapter {
                 Commands.slash("togglemessageediting", "toggle message editing")
         ).queue();
 
-        Cache.createCache();
+        Cache.createCache(map);
         jda.awaitReady();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
 
@@ -82,7 +82,7 @@ public class Main extends ListenerAdapter {
         ScheduledFuture<?> TownRuinFuture = scheduler.scheduleAtFixedRate(() -> TownRuins.getRuinedTowns(jda, (String) properties.get("townFlowChannelId"), map), 0, delayInSeconds, TimeUnit.SECONDS);
         ScheduledFuture<?> cacheFuture = scheduler.scheduleAtFixedRate(() -> {
             try {
-                Cache.updateCache();
+                Cache.updateCache(map);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

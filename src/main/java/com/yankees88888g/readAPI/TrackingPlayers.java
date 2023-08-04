@@ -6,6 +6,7 @@ import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.discordUsers.ManageData;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.core.EMCWrapper;
+import io.github.emcw.entities.Location;
 import io.github.emcw.entities.Player;
 import io.github.emcw.exceptions.MissingEntryException;
 import net.dv8tion.jda.api.JDA;
@@ -20,7 +21,7 @@ public class TrackingPlayers {
     static EMCWrapper emc = new EMCWrapper();
 
     public static void trackPlayers(JDA jda, EMCMap map) {
-        HashMap<String, Coordinates> playersCoordinates = GetPlayersData.getPlayersData();
+        Map<String, Player> players = GetPlayersData.getPlayersData(map);
 
         File directory = new File("discordUsers/");
 
@@ -42,20 +43,20 @@ public class TrackingPlayers {
 
                         if(tracking != null) {
                             for (String s : tracking) {
-                                if (playersCoordinates.containsKey(s)) {
-                                    Coordinates coordinates = playersCoordinates.get(s);
-                                    if (!coordinates.underground) {
-                                        stringBuilder.append(coordinates.name).append(" is at x= ")
-                                                .append(coordinates.x).append(" y= ")
-                                                .append(coordinates.y).append(" z= ")
-                                                .append(coordinates.z).append("<t:").append(coordinates.unixTime).append(":R>").append("\n").append("\n");
+                                if (players.containsKey(s)) {
+                                    Location location = players.get(s).getLocation();
+                                    if (players.get(s).aboveGround()) {
+                                        stringBuilder.append(players.get(s).getName()).append(" is at x= ")
+                                                .append(location.getX()).append(" y= ")
+                                                .append(location.getY()).append(" z= ")
+                                                .append(location.getZ()).append("<t:");//.append(location.unixTime).append(":R>").append("\n");
                                     } else {
                                         if (ManageData.readToggles(file, "unknownLocationUpdates")){
-                                            stringBuilder.append(coordinates.name)
+                                            stringBuilder.append(players.get(s).getName())
                                                 .append(" is underground")
                                                 .append("\n");
                                         } else {
-                                            Coordinates cachedCoordinates = Cache.getFromCache(coordinates.name);
+                                            Coordinates cachedCoordinates = Cache.getFromCache(players.get(s).getName());
                                             stringBuilder.append(cachedCoordinates.name).append(" was last visualable at x= ")
                                                     .append(cachedCoordinates.x).append(" y= ")
                                                     .append(cachedCoordinates.y).append(" z= ")
