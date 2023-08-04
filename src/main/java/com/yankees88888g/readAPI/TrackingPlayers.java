@@ -4,16 +4,22 @@ import com.yankees88888g.APIObjects.Coordinates;
 import com.yankees88888g.BotActions;
 import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.discordUsers.ManageData;
+import io.github.emcw.core.EMCMap;
+import io.github.emcw.core.EMCWrapper;
+import io.github.emcw.entities.Player;
+import io.github.emcw.exceptions.MissingEntryException;
 import net.dv8tion.jda.api.JDA;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TrackingPlayers {
+    static EMCWrapper emc = new EMCWrapper();
 
-    public static void trackPlayers(JDA jda) {
+    public static void trackPlayers(JDA jda, EMCMap map) {
         HashMap<String, Coordinates> playersCoordinates = GetPlayersData.getPlayersData();
 
         File directory = new File("discordUsers/");
@@ -75,18 +81,16 @@ public class TrackingPlayers {
     }
 
 
-    /*static EMCWrapper emc = new EMCWrapper();
-    static EMCMap aurora;
 
 
 
-    public static void main(String[] args) throws MissingEntryException {
-        aurora = emc.getAurora();
+
+    /*public static void mawin(EMCMap emc) throws MissingEntryException {
         //Nation exampleNation = aurora.Nations.single("cuba");
         for(int i = 0; i < 100; i++) {
-            Map<String, Player> playerMap = aurora.Players.get("yankees88888g");
+            Map<String, Player> playerMap = map.Players.get("yankees88888g");
             Player player = playerMap.get("yankees88888g");
-            Coordinates coordinates = new Coordinates(player.getName(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.underground());
+            Coordinates coordinates = new Coordinates(player.getName(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.underground(),System.currentTimeMillis() / 1000);
             System.out.println(coordinates.z);
             //System.out.println(Aurora.Players.all());
         }

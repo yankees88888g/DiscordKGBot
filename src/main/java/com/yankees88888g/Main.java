@@ -10,6 +10,8 @@ import com.yankees88888g.discordUsers.ManageData;
 import com.yankees88888g.readAPI.ProtectingPlayers;
 import com.yankees88888g.readAPI.ReadAPI;
 import com.yankees88888g.readAPI.TrackingPlayers;
+import io.github.emcw.core.EMCMap;
+import io.github.emcw.core.EMCWrapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -37,6 +39,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Main extends ListenerAdapter {
     public static void main(String[] args) throws InterruptedException, IOException {
+
+        EMCMap map = new EMCWrapper(true, false).getAurora();
         Properties properties = new Properties();
         properties.load(new FileInputStream("bot.properties"));
 
@@ -69,12 +73,13 @@ public class Main extends ListenerAdapter {
 
         Cache.createCache();
         jda.awaitReady();
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
 
         int delayInSeconds = 10; //adjustable
 
-        ScheduledFuture<?> trackingFuture = scheduler.scheduleAtFixedRate(() -> TrackingPlayers.trackPlayers(jda), 0, delayInSeconds, TimeUnit.SECONDS);
-        ScheduledFuture<?> protectingFuture = scheduler.scheduleAtFixedRate(() -> ProtectingPlayers.protectPlayers(jda), 0, delayInSeconds, TimeUnit.SECONDS);
+        ScheduledFuture<?> trackingFuture = scheduler.scheduleAtFixedRate(() -> TrackingPlayers.trackPlayers(jda, map), 0, delayInSeconds, TimeUnit.SECONDS);
+        ScheduledFuture<?> protectingFuture = scheduler.scheduleAtFixedRate(() -> ProtectingPlayers.protectPlayers(jda, map), 0, delayInSeconds, TimeUnit.SECONDS);
+        ScheduledFuture<?> TownRuinFuture = scheduler.scheduleAtFixedRate(() -> TownRuins.getRuinedTowns(jda, (String) properties.get("townFlowChannelId"), map), 0, delayInSeconds, TimeUnit.SECONDS);
         ScheduledFuture<?> cacheFuture = scheduler.scheduleAtFixedRate(() -> {
             try {
                 Cache.updateCache();

@@ -11,8 +11,8 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    /*var localProps = Properties()
-    localProps.load(FileInputStream(rootProject.file("local.properties")))
+    var localProps = Properties()
+    localProps.load(FileInputStream(rootProject.file("bot.properties")))
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
@@ -20,13 +20,13 @@ repositories {
             username = localProps.getProperty("USERNAME")
             password = localProps.getProperty("GITHUB_TOKEN")
         }
-    }*/
+    }
 }
 
 dependencies {
     implementation("net.dv8tion:JDA:5.0.0-beta.12")
     implementation("com.google.code.gson:gson:2.10.1")
-    //implementation("io.github.emcw:emc-wrapper:0.11.2")
+    implementation("io.github.emcw:emc-wrapper:0.11.2")
 }
 
 tasks.test {

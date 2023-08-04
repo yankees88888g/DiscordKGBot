@@ -13,6 +13,7 @@ import java.util.HashMap;
 public class Cache {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    static Type playerListType = new TypeToken<HashMap<String, Coordinates>>() {}.getType();
 
     public static void createCache() throws IOException {
         FileWriter writer = new FileWriter(getFile());
@@ -28,7 +29,7 @@ public class Cache {
     }
 
     public static void updateCache() throws IOException {
-        Type playerListType = new TypeToken<HashMap<String, Coordinates>>() {}.getType();
+
 
         HashMap<String, Coordinates> coordinatesList = gson.fromJson(new FileReader(getFile()), playerListType);
         System.out.println(coordinatesList.get("yankees88888g").x);
@@ -48,7 +49,6 @@ public class Cache {
     }
 
     public static Coordinates getFromCache(String name) throws FileNotFoundException {
-        Type playerListType = new TypeToken<HashMap<String, Coordinates>>() {}.getType();
 
         HashMap<String, Coordinates> coordinatesList = gson.fromJson(new FileReader(getFile()), playerListType);
         return coordinatesList.get(name);

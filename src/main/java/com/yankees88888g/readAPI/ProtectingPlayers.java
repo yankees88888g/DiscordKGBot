@@ -4,6 +4,7 @@ import com.yankees88888g.APIObjects.Coordinates;
 import com.yankees88888g.BotActions;
 import com.yankees88888g.Math;
 import com.yankees88888g.discordUsers.ManageData;
+import io.github.emcw.core.EMCMap;
 import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 
 public class ProtectingPlayers {
 
-    public static void protectPlayers(JDA jda) {
+    public static void protectPlayers(JDA jda, EMCMap map) {
         protectPlayers(jda, 250);
     }
 
