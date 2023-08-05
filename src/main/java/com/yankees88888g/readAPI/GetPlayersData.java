@@ -42,6 +42,6 @@ public class GetPlayersData {
     }*/
 
     public static Map<String, Player> getPlayersData(EMCMap map) {
-        return map.Players.all();
+        return map.Players.online();
     }
 }

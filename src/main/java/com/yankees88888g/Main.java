@@ -10,6 +10,8 @@ import com.yankees88888g.discordUsers.ManageData;
 import com.yankees88888g.readAPI.ProtectingPlayers;
 import com.yankees88888g.readAPI.ReadAPI;
 import com.yankees88888g.readAPI.TrackingPlayers;
+import io.github.emcw.caching.CacheOptions;
+import io.github.emcw.caching.CacheStrategy;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.core.EMCWrapper;
 import net.dv8tion.jda.api.JDA;
@@ -38,9 +40,14 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends ListenerAdapter {
+    static CacheOptions lazy = new CacheOptions(4, TimeUnit.SECONDS, CacheStrategy.LAZY);
+    static CacheOptions timed = new CacheOptions(3, TimeUnit.MINUTES, CacheStrategy.TIME_BASED);
+
+    static EMCMap map = new EMCMap("aurora", timed, lazy);
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        EMCMap map = new EMCWrapper(true, false).getAurora();
+
+        //EMCMap map = new EMCWrapper(true, false).getAurora();
         Properties properties = new Properties();
         properties.load(new FileInputStream("bot.properties"));
 
@@ -71,7 +78,7 @@ public class Main extends ListenerAdapter {
                 Commands.slash("togglemessageediting", "toggle message editing")
         ).queue();
 
-        Cache.createCache(map);
+        //Cache.createCache(map);
         jda.awaitReady();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
 

@@ -26,7 +26,7 @@ repositories {
 dependencies {
     implementation("net.dv8tion:JDA:5.0.0-beta.12")
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("io.github.emcw:emc-wrapper:0.11.2")
+    implementation("io.github.emcw:emc-wrapper:0.11.3")
 }
 
 tasks.test {

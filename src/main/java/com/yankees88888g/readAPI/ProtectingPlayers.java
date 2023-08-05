@@ -55,8 +55,6 @@ public class ProtectingPlayers {
                                             .append(s).append(", is offline\n");
                                 }
                             }
-
-                            System.out.println(ManageData.readToggles(file, "toggleableEditing"));
                             BotActions.sendDMUpdates(jda, id, stringBuilder.toString(), file, ManageData.readToggles(file, "toggleableEditing"), "protect");
                         }
                     } catch (IOException e) { throw new RuntimeException(e); }

@@ -10,9 +10,10 @@ public class PlayerTime extends Player {
         this.time = time;
     }
 
-    public long getTime() {
+    public long getTimeMillisecounds() {
         return time;
     }
+    public long getUnix() {return time/1000;}
 
     public void setTime(long time) {
         this.time = time;
