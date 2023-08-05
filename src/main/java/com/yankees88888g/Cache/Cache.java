@@ -7,35 +7,36 @@ import com.yankees88888g.APIObjects.Coordinates;
 import com.yankees88888g.readAPI.GetPlayersData;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.Player;
+import io.github.emcw.utils.GsonUtil;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Cache {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    static Type playerListType = new TypeToken<HashMap<String, Player>>() {}.getType();
+    static Type playerListType = new TypeToken<Map<String, PlayerTime>>() {}.getType();
 
     public static void createCache(EMCMap map) throws IOException {
-        FileWriter writer = new FileWriter(getFile());
-        Map<String, Player> playerMap = new HashMap<>();
+        Map<String, PlayerTime> playerMap = new HashMap<>();
 
         for (Player player : GetPlayersData.getPlayersData(map).values()) {
-            System.out.println(player.aboveGround());
-            if (player.aboveGround())
-                playerMap.put(player.getName(), player);
+            if (player.getLocation() != null)
+                if (player.getLocation().valid())
+                    playerMap.put(player.getName(), new PlayerTime(player, System.currentTimeMillis() / 1000));
         }
+        System.out.println(GsonUtil.serialize(playerMap));
+        writeToFile(getFile().getPath(), GsonUtil.serialize(playerMap));
         System.out.println(playerMap.get("yankees88888g").getLocation().getX());
-        writer.write(gson.toJson(playerMap));
-        writer.close();
     }
 
     public static void updateCache(EMCMap map) throws IOException {
 
-
-        Map<String, Player> playerMap = gson.fromJson(new FileReader(getFile()), playerListType);
+        Map<String, PlayerTime> playerMap = GsonUtil.deserialize(getFileContents(getFile()), playerListType);
         System.out.println(playerMap.get("yankees88888g").getLocation().getX());
 
         FileWriter writer = new FileWriter(getFile());
@@ -45,10 +46,10 @@ public class Cache {
         for (Player player : players.values()) {
             if (player.aboveGround()) {
                 players.remove(player.getName());
-                playerMap.put(player.getName(), player);
+                playerMap.put(player.getName(), new PlayerTime(player, System.currentTimeMillis() / 1000));
             }
         }
-        writer.write(gson.toJson(playerMap));
+        writer.write(GsonUtil.serialize(playerMap));
         writer.close();
     }
 
@@ -60,5 +61,19 @@ public class Cache {
 
     private static File getFile(){
         return new File("cache.json");
+    }
+    public static void writeToFile(String name, String data) {
+        try (FileWriter writer = new FileWriter(name)) {
+            writer.write(data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static String getFileContents(File file) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(file.getPath())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
