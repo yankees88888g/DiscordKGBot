@@ -3,6 +3,9 @@ package com.yankees88888g.readAPI;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yankees88888g.APIObjects.Coordinates;
+import io.github.emcw.core.EMCMap;
+import io.github.emcw.entities.Location;
+import io.github.emcw.entities.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStreamReader;
@@ -10,9 +13,10 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GetPlayersData {
-    static Gson gson = new Gson();
+    /*static Gson gson = new Gson();
     static Type listType = new TypeToken<List<Coordinates>>(){}.getType();
 
     @NotNull
@@ -35,5 +39,9 @@ public class GetPlayersData {
         }
 
         return coordinatesMap;
+    }*/
+
+    public static Map<String, Player> getPlayersData(EMCMap map) {
+        return map.Players.online();
     }
 }

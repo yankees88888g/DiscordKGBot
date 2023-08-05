@@ -13,6 +13,7 @@ import static com.yankees88888g.discordUsers.ManageData.getEditableMessage;
 
 public class BotActions {
     public static List<String> sendDMUpdates(JDA jda, String userId, String message, File file, Boolean editMessage, String type) throws IOException {
+        System.out.println(message);
         if(file != null) {
             //boolean editMessage = ManageData.readToggles(file, "toggleableEditing");
             if (!editMessage) {
@@ -28,10 +29,7 @@ public class BotActions {
                     PrivateChannel channel = user.openPrivateChannel().complete();
 
                     System.out.println(channel.getName());
-                    channel.retrieveMessageById(getEditableMessage(file, type)).complete().editMessage(message).queue(
-                            success -> System.out.println("Message edited successfully!"),
-                            error -> System.out.println("Error editing message: " + error.getMessage())
-                    );
+                    channel.retrieveMessageById(getEditableMessage(file, type)).complete().editMessage(message).complete();
                 } catch (IOException e) { throw new RuntimeException(e); }
             }
         } else {

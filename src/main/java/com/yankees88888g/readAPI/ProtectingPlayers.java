@@ -5,6 +5,8 @@ import com.yankees88888g.BotActions;
 import com.yankees88888g.Math;
 import com.yankees88888g.discordUsers.ManageData;
 import io.github.emcw.core.EMCMap;
+import io.github.emcw.entities.Location;
+import io.github.emcw.entities.Player;
 import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,10 +20,10 @@ import java.util.Objects;
 public class ProtectingPlayers {
 
     public static void protectPlayers(JDA jda, EMCMap map) {
-        protectPlayers(jda, 250);
+        protectPlayers(jda, 250, map);
     }
 
-    public static void protectPlayers(JDA jda, Integer radius) {
+    public static void protectPlayers(JDA jda, Integer radius, EMCMap map) {
         File directory = new File("discordUsers/");
         if (!directory.isDirectory()) {
             System.out.println("The specified path is not a directory.");
@@ -30,7 +32,7 @@ public class ProtectingPlayers {
 
         File[] files = directory.listFiles();
         if (files != null) {
-            HashMap<String, Coordinates> playersCoordinates = GetPlayersData.getPlayersData();
+            Map<String, Player> players = GetPlayersData.getPlayersData(map);
 
             // Process each file in the directory
             for (File file : files) {
@@ -43,18 +45,16 @@ public class ProtectingPlayers {
                             StringBuilder stringBuilder = new StringBuilder();
 
                             for (String s : protecting) {
-                                if (playersCoordinates.containsKey(s)) {
-                                    Coordinates coordinates = playersCoordinates.get(s);
+                                if (players.containsKey(s)) {
+                                    //Location location = players.get(s).getLocation();
                                     stringBuilder.append(findAllPlayersDistancesFromAPoint(
-                                            playersCoordinates, coordinates, radius
+                                            players, players.get(s), radius
                                     ));
                                 } else {
                                     stringBuilder.append("The player you are protecting, ")
                                             .append(s).append(", is offline\n");
                                 }
                             }
-
-                            System.out.println(ManageData.readToggles(file, "toggleableEditing"));
                             BotActions.sendDMUpdates(jda, id, stringBuilder.toString(), file, ManageData.readToggles(file, "toggleableEditing"), "protect");
                         }
                     } catch (IOException e) { throw new RuntimeException(e); }
@@ -66,19 +66,19 @@ public class ProtectingPlayers {
     }
 
     @NotNull
-    private static String findAllPlayersDistancesFromAPoint(HashMap<String, Coordinates> playersCoordinates, Coordinates protectingCoordinates, int protectionRadius) {
+    private static String findAllPlayersDistancesFromAPoint(Map<String, Player> playersCoordinates, Player protectingPlayer, int protectionRadius) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, Coordinates> i : playersCoordinates.entrySet()) {
-            Coordinates coordinates = i.getValue();
-            if (!coordinates.underground) {
-                if (!Objects.equals(coordinates.name, protectingCoordinates.name)) {
-                    int distance = Math.findShortestDistance(coordinates.x, coordinates.z, protectingCoordinates.x, protectingCoordinates.z);
+        for (Map.Entry<String, Player> i : playersCoordinates.entrySet()) {
+            Location location = i.getValue().getLocation();
+            if (i.getValue().aboveGround()) {
+                if (!Objects.equals(i.getValue().getName(), protectingPlayer.getName())) {
+                    int distance = Math.findShortestDistance(location.getX(), location.getZ(), protectingPlayer.getLocation().getX(), protectingPlayer.getLocation().getZ());
                     if (distance < protectionRadius)
-                        stringBuilder.append(coordinates.name)
+                        stringBuilder.append(i.getValue().getName())
                                 .append(" is ")
                                 .append(distance)
                                 .append(" blocks away from ")
-                                .append(protectingCoordinates.name)
+                                .append(protectingPlayer.getName())
                                 .append("\n");
                 }
             }
@@ -91,7 +91,7 @@ public class ProtectingPlayers {
         return stringBuilder.append("No player is within ")
                 .append(protectionRadius)
                 .append(" blocks of ")
-                .append(protectingCoordinates.name)
+                .append(protectingPlayer.getName())
                 .toString();
     }
 }
