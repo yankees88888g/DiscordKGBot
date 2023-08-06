@@ -20,10 +20,10 @@ import java.util.Objects;
 public class ProtectingPlayers {
 
     public static void protectPlayers(JDA jda, EMCMap map) {
-        protectPlayers(jda, 250, map);
+        protectPlayers(jda, map,250);
     }
 
-    public static void protectPlayers(JDA jda, Integer radius, EMCMap map) {
+    public static void protectPlayers(JDA jda, EMCMap map, Integer radius) {
         File directory = new File("discordUsers/");
         if (!directory.isDirectory()) {
             System.out.println("The specified path is not a directory.");

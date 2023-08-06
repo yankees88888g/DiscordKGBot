@@ -8,5 +8,6 @@ public class Town {
     public String nation;
     public Timestamps timestamps;
     public Status status;
+    public String mayor;
 
 }

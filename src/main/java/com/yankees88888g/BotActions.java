@@ -2,6 +2,7 @@ package com.yankees88888g;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 
 import java.io.File;
@@ -39,5 +40,9 @@ public class BotActions {
             return ids;
         }
         return null;
+    }
+
+    public static void sendMessages(String channelId, JDA jda, String message) {
+        jda.getTextChannelById(channelId).sendMessage(message).queue();
     }
 }

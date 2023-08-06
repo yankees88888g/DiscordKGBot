@@ -51,7 +51,7 @@ public class TrackingPlayers {
                                         stringBuilder.append(players.get(s).getName()).append(" was last visualable at x= ")
                                                 .append(location.getX()).append(" y= ")
                                                 .append(location.getY()).append(" z= ")
-                                                .append(location.getZ()).append("<t:").append(players.get(s).getUnix()).append(":R>").append("\n");
+                                                .append(location.getZ()).append(" <t:").append(players.get(s).getUnix()).append(":R>").append("\n");
                                     } else {
                                         if (ManageData.readToggles(file, "unknownLocationUpdates")){
                                             stringBuilder.append(players.get(s).getName())

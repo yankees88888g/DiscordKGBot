@@ -50,6 +50,8 @@ public class Main extends ListenerAdapter {
         //EMCMap map = new EMCWrapper(true, false).getAurora();
         Properties properties = new Properties();
         properties.load(new FileInputStream("bot.properties"));
+        int radius = Integer.parseInt(properties.get("protectionRadius").toString());
+        String townFallPredictionChannelId = properties.getProperty("townFallPredictionChannelId");
 
         JDA jda = JDABuilder.createLight(properties.getProperty("token"), Collections.emptyList())
                 .addEventListeners(new Main())
@@ -80,21 +82,27 @@ public class Main extends ListenerAdapter {
 
         //Cache.createCache(map);
         jda.awaitReady();
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
+        BotActions.sendMessages(townFallPredictionChannelId, jda, "hello");
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 
         int delayInSeconds = 10; //adjustable
+        int townPredictionDelayInHours = 24;
 
         ScheduledFuture<?> trackingFuture = scheduler.scheduleAtFixedRate(() -> TrackingPlayers.trackPlayers(jda, map), 0, delayInSeconds, TimeUnit.SECONDS);
-        ScheduledFuture<?> protectingFuture = scheduler.scheduleAtFixedRate(() -> ProtectingPlayers.protectPlayers(jda, map), 0, delayInSeconds, TimeUnit.SECONDS);
+        ScheduledFuture<?> protectingFuture = scheduler.scheduleAtFixedRate(() -> ProtectingPlayers.protectPlayers(jda, map, radius), 0, delayInSeconds, TimeUnit.SECONDS);
         ScheduledFuture<?> TownRuinFuture = scheduler.scheduleAtFixedRate(() -> TownRuins.getRuinedTowns(jda, (String) properties.get("townFlowChannelId"), map), 0, delayInSeconds, TimeUnit.SECONDS);
         ScheduledFuture<?> cacheFuture = scheduler.scheduleAtFixedRate(() -> {
             try {
                 Cache.updateCache(map);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            } catch (IOException e) {throw new RuntimeException(e);}
         }, 0, delayInSeconds, TimeUnit.SECONDS);
 
+        ScheduledFuture<?> mayorActivity = scheduler.scheduleAtFixedRate(() -> {
+            try {
+                MayorActivity.mayorActivity(jda, townFallPredictionChannelId);
+            } catch (IOException e) {throw new RuntimeException(e);}
+
+        }, 0, townPredictionDelayInHours, TimeUnit.HOURS);
         //getAllData();
     }
 

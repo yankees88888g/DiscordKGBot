@@ -7,7 +7,8 @@ create a file bot.properties with the following.
 USERNAME=githubUsername\
 GITHUB_TOKEN=github token\
 token=bot token\
-townFlowChannelId=town flow channel id nullable
+townFlowChannelId=town flow channel id nullable\
+protectionRadius=protection radius
 
 ## Usage
 
