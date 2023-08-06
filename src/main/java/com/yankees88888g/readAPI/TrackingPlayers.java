@@ -48,10 +48,10 @@ public class TrackingPlayers {
                                 if (players.containsKey(s)) {
                                     Location location = players.get(s).getLocation();
                                     if (!players.get(s).underground()) {
-                                        stringBuilder.append(players.get(s).getName()).append(" is at x= ")
+                                        stringBuilder.append(players.get(s).getName()).append(" was last visualable at x= ")
                                                 .append(location.getX()).append(" y= ")
                                                 .append(location.getY()).append(" z= ")
-                                                .append(location.getZ());//.append("<t:").append(playerTime.unixTime).append(":R>").append("\n");
+                                                .append(location.getZ()).append("<t:").append(players.get(s).getUnix()).append(":R>").append("\n");
                                     } else {
                                         if (ManageData.readToggles(file, "unknownLocationUpdates")){
                                             stringBuilder.append(players.get(s).getName())
@@ -62,7 +62,7 @@ public class TrackingPlayers {
                                             stringBuilder.append(playerTime.getName()).append(" was last visualable at x= ")
                                                     .append(playerTime.getLocation().getX()).append(" y= ")
                                                     .append(playerTime.getLocation().getY()).append(" z= ")
-                                                    .append(playerTime.getLocation().getZ()).append("<t:").append(playerTime.getUnix()).append(":R>").append("\n");
+                                                    .append(playerTime.getLocation().getZ()).append(" <t:").append(playerTime.getUnix()).append(":R>").append("\n");
                                         }
                                     }
                                 } else {
