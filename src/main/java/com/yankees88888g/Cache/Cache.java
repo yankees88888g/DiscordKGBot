@@ -42,6 +42,7 @@ public class Cache {
     }
 
     public static void updateCache(EMCMap map) throws IOException {
+        players = GsonUtil.deserialize(getFileContents("cache.json"), playerListType);
         System.out.println("Updating cache");
         Map<String, Player> ops = map.Players.online();
 
