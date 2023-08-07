@@ -26,7 +26,7 @@ public class MayorActivity {
             townMayorData.add(mayorData);
         }
         for (Resident townMayorDatum : townMayorData) {
-            BotActions.sendMessages(channelId, jda, "\n" + townMayorDatum.timestamps.lastOnline + " Mayor: " + townMayorDatum.name + " Town: " + townMayorDatum.town);
+            BotActions.sendMessages(channelId, jda, "\n<t:" + townMayorDatum.timestamps.lastOnline/1000 + ":F> Mayor: " + townMayorDatum.name + " Town: " + townMayorDatum.town);
         }
         System.out.println(stringBuilder);
     }

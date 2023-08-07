@@ -82,7 +82,6 @@ public class Main extends ListenerAdapter {
 
         //Cache.createCache(map);
         jda.awaitReady();
-        BotActions.sendMessages(townFallPredictionChannelId, jda, "hello");
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 
         int delayInSeconds = 10; //adjustable

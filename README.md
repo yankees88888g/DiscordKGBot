@@ -8,6 +8,7 @@ USERNAME=githubUsername\
 GITHUB_TOKEN=github token\
 token=bot token\
 townFlowChannelId=town flow channel id nullable\
+townFallPredictionChannelId=predictor\
 protectionRadius=protection radius
 
 ## Usage
