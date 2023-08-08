@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class ProtectingPlayers {
 
@@ -69,18 +70,30 @@ public class ProtectingPlayers {
     @NotNull
     private static String findAllPlayersDistancesFromAPoint(Map<String, PlayerTime> playersCoordinates, Player protectingPlayer, int protectionRadius) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, PlayerTime> i : playersCoordinates.entrySet()) {
-            Location location = i.getValue().getLocation();
-            if (i.getValue().aboveGround()) {
-                if (!Objects.equals(i.getValue().getName(), protectingPlayer.getName())) {
-                    int distance = MathUtil.findShortestDistance(location.getX(), location.getZ(), protectingPlayer.getLocation().getX(), protectingPlayer.getLocation().getZ());
-                    if (distance < protectionRadius)
-                        stringBuilder.append(i.getValue().getName())
+
+        Location protectingPlayerLoc = protectingPlayer.getLocation();
+        String protectingPlayerName = protectingPlayer.getName();
+
+        Set<Map.Entry<String, PlayerTime>> entries = playersCoordinates.entrySet();
+        for (Map.Entry<String, PlayerTime> e : entries) {
+            Player curPlayer = e.getValue();
+            Location location = curPlayer.getLocation();
+
+            if (curPlayer.aboveGround()) {
+                if (!Objects.equals(curPlayer.getName(), protectingPlayerName)) {
+                    int distance = MathUtil.findShortestDistance(
+                            location.getX(), location.getZ(),
+                            protectingPlayerLoc.getX(), protectingPlayerLoc.getZ()
+                    );
+
+                    if (distance < protectionRadius) {
+                        stringBuilder.append(curPlayer.getName())
                                 .append(" is ")
                                 .append(distance)
                                 .append(" blocks away from ")
-                                .append(protectingPlayer.getName())
+                                .append(protectingPlayerName)
                                 .append("\n");
+                    }
                 }
             }
         }
@@ -92,7 +105,7 @@ public class ProtectingPlayers {
         return stringBuilder.append("No player is within ")
                 .append(protectionRadius)
                 .append(" blocks of ")
-                .append(protectingPlayer.getName())
+                .append(protectingPlayerName)
                 .toString();
     }
 }

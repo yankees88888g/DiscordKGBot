@@ -5,11 +5,8 @@ import io.github.emcw.entities.Town;
 import io.github.emcw.map.Towns;
 import net.dv8tion.jda.api.JDA;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class TownRuins {
 

@@ -43,14 +43,17 @@ public class GetPlayersData {
     }*/
 
     public static Map<String, PlayerTime> getPlayersData(EMCMap map) {
-
         Map<String, Player> online = map.Players.online();
         Map<String, PlayerTime> onlinePlayers = new HashMap<>();
-        for (Map.Entry<String, Player> entry : online.entrySet()) {
-            if (!entry.getValue().underground()){
-                onlinePlayers.put(entry.getKey(), new PlayerTime(entry.getValue(), System.currentTimeMillis()));
+
+        Set<Map.Entry<String, Player>> entries = online.entrySet();
+        for (Map.Entry<String, Player> entry : entries) {
+            Player p = entry.getValue();
+            if (!p.underground()){
+                onlinePlayers.put(entry.getKey(), new PlayerTime(p, System.currentTimeMillis()));
             }
         }
+
         return onlinePlayers;
     }
 }
