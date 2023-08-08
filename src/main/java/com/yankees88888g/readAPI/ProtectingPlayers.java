@@ -2,11 +2,14 @@ package com.yankees88888g.readAPI;
 
 import com.yankees88888g.APIObjects.Coordinates;
 import com.yankees88888g.BotActions;
+import com.yankees88888g.Cache.Cache;
+import com.yankees88888g.Cache.PlayerTime;
 import com.yankees88888g.Math;
 import com.yankees88888g.discordUsers.ManageData;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.Location;
 import io.github.emcw.entities.Player;
+import io.github.emcw.utils.GsonUtil;
 import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +35,7 @@ public class ProtectingPlayers {
 
         File[] files = directory.listFiles();
         if (files != null) {
-            Map<String, Player> players = GetPlayersData.getPlayersData(map);
+            Map<String, PlayerTime> players = GsonUtil.deserialize(Cache.getFileContents("cache.json"), Cache.playerListType);
 
             // Process each file in the directory
             for (File file : files) {
@@ -66,9 +69,9 @@ public class ProtectingPlayers {
     }
 
     @NotNull
-    private static String findAllPlayersDistancesFromAPoint(Map<String, Player> playersCoordinates, Player protectingPlayer, int protectionRadius) {
+    private static String findAllPlayersDistancesFromAPoint(Map<String, PlayerTime> playersCoordinates, Player protectingPlayer, int protectionRadius) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, Player> i : playersCoordinates.entrySet()) {
+        for (Map.Entry<String, PlayerTime> i : playersCoordinates.entrySet()) {
             Location location = i.getValue().getLocation();
             if (i.getValue().aboveGround()) {
                 if (!Objects.equals(i.getValue().getName(), protectingPlayer.getName())) {
