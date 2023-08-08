@@ -160,14 +160,14 @@ public class Main extends ListenerAdapter {
             case "protectlist" -> replyWithList(event, "protect");
             case "untrack" -> {
                 try {
-                    ManageData.deleteData(event.getUser(), Link.getFile(event.getUser()), "track", event.getOption("username").getAsString());
+                    event.reply(ManageData.deleteData(event.getUser(), Link.getFile(event.getUser()), "track", event.getOption("username").getAsString())).queue();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
             case "unprotect" -> {
                 try {
-                    ManageData.deleteData(event.getUser(), Link.getFile(event.getUser()), "protect", event.getOption("username").getAsString());
+                    event.reply(ManageData.deleteData(event.getUser(), Link.getFile(event.getUser()), "protect", event.getOption("username").getAsString())).queue();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

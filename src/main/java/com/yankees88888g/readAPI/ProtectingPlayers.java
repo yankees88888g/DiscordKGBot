@@ -1,10 +1,9 @@
 package com.yankees88888g.readAPI;
 
-import com.yankees88888g.APIObjects.Coordinates;
 import com.yankees88888g.BotActions;
 import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.Cache.PlayerTime;
-import com.yankees88888g.Math;
+import com.yankees88888g.MathUtil;
 import com.yankees88888g.discordUsers.ManageData;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.Location;
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -75,7 +73,7 @@ public class ProtectingPlayers {
             Location location = i.getValue().getLocation();
             if (i.getValue().aboveGround()) {
                 if (!Objects.equals(i.getValue().getName(), protectingPlayer.getName())) {
-                    int distance = Math.findShortestDistance(location.getX(), location.getZ(), protectingPlayer.getLocation().getX(), protectingPlayer.getLocation().getZ());
+                    int distance = MathUtil.findShortestDistance(location.getX(), location.getZ(), protectingPlayer.getLocation().getX(), protectingPlayer.getLocation().getZ());
                     if (distance < protectionRadius)
                         stringBuilder.append(i.getValue().getName())
                                 .append(" is ")
