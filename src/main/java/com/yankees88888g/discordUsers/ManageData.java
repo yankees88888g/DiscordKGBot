@@ -31,9 +31,10 @@ public class ManageData {
         }
     }
 
-    public static void editData(User user, File usersFile, String type, String player, List<String> ids) throws IOException {
+    public static String editData(User user, File usersFile, String type, String player, List<String> ids) throws IOException {
         DiscordUser discordUser = deserializeUser(usersFile);
         FileWriter writer = new FileWriter(usersFile);
+        String response = null;
 
         switch (type) {
             case "track" -> {
@@ -53,6 +54,7 @@ public class ManageData {
                             discordUser.editMessage, discordUser.unknownLocationUpdates
                     ));
                 }
+                response = "successfully started tracking " + player;
             }
             case "protect" -> {
                 if (discordUser.protecting == null) {
@@ -63,6 +65,7 @@ public class ManageData {
                             discordUser.toggleableTracking, discordUser.toggleableProtecting,
                             discordUser.editMessage, discordUser.unknownLocationUpdates
                     ));
+
                 } else {
                     discordUser.protecting.add(player);
                     writer.write(serializeUser(discordUser.username, user.getId(),
@@ -71,21 +74,26 @@ public class ManageData {
                             discordUser.editMessage, discordUser.unknownLocationUpdates
                     ));
                 }
+                response = "successfully started protecting " + player;
             }
-            case "toggleTracking" -> writer.write(
-                    serializeUser(discordUser.username, user.getId(),
-                            discordUser.tracking, discordUser.protecting, discordUser.editableMessage,
-                            !discordUser.toggleableTracking, discordUser.toggleableProtecting,
-                            discordUser.editMessage, discordUser.unknownLocationUpdates
-                    )
-            );
-            case "toggleProtecting" -> writer.write(
-                    serializeUser(discordUser.username, user.getId(),
+            case "toggleTracking" -> {
+                writer.write(serializeUser(discordUser.username, user.getId(),
+                                discordUser.tracking, discordUser.protecting, discordUser.editableMessage,
+                                !discordUser.toggleableTracking, discordUser.toggleableProtecting,
+                                discordUser.editMessage, discordUser.unknownLocationUpdates
+                ));
+                if (!discordUser.toggleableTracking) response = "starting tracking players";
+                else response = "stopped tracking players";
+            }
+            case "toggleProtecting" -> {
+                writer.write(serializeUser(discordUser.username, user.getId(),
                             discordUser.tracking, discordUser.protecting, discordUser.editableMessage,
                             discordUser.toggleableTracking, !discordUser.toggleableProtecting,
                             discordUser.editMessage, discordUser.unknownLocationUpdates
-                    )
-            );
+                    ));
+                if (!discordUser.toggleableTracking) response = "starting protecting players";
+                else response = "stopped protecting players";
+            }
             case "toggleMessageEditing" -> writer.write(
                     serializeUser(discordUser.username, user.getId(),
                             discordUser.tracking, discordUser.protecting, discordUser.editableMessage,
@@ -101,8 +109,8 @@ public class ManageData {
                     )
             );
         }
-
         writer.close();
+        return response;
     }
 
     public static List<String> readData(File usersFile, String type) throws IOException {

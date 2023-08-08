@@ -117,7 +117,7 @@ public class Main extends ListenerAdapter {
             OptionMapping option = event.getOption("username");
             String player = option == null ? null : option.getAsString();
 
-            ManageData.editData(user, file, type, player, ids);
+            event.reply(ManageData.editData(user, file, type, player, ids)).queue();
         } catch (Exception e) {
             e.printStackTrace();
         }
