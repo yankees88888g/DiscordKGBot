@@ -21,7 +21,7 @@ public class MayorActivity {
             if (mayorData.timestamps.lastOnline != null) {
                 long unixTime = mayorData.timestamps.lastOnline / 1000;
                 if (isUnixTimeOlderThan40Days(unixTime)) {
-                    stringBuilder.append("\nExpected Fall time <t:").append(getHowLongTillFallEst(unixTime)).append(":F> Mayor: ").append(mayorData.name).append(" Town: ").append(mayorData.town).append("; Mayor was last on at <t:").append(unixTime).append(":F>");
+                    stringBuilder.append("\nExpected Fall time <t:").append(getHowLongTillFallEst(unixTime)).append(":F> Mayor: ").append(mayorData.name).append(" Town: **").append(mayorData.town).append("**; Mayor was last on at <t:").append(unixTime).append(":F>");
                     if (stringBuilder.length() > 1500) {
                         BotActions.sendMessages(channelId, jda, stringBuilder.toString());
                         stringBuilder.setLength(0);
