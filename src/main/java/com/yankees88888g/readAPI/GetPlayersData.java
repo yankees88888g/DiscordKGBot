@@ -3,6 +3,7 @@ package com.yankees88888g.readAPI;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yankees88888g.APIObjects.Coordinates;
+import com.yankees88888g.Cache.PlayerTime;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.Location;
 import io.github.emcw.entities.Player;
@@ -41,7 +42,15 @@ public class GetPlayersData {
         return coordinatesMap;
     }*/
 
-    public static Map<String, Player> getPlayersData(EMCMap map) {
-        return map.Players.online();
+    public static Map<String, PlayerTime> getPlayersData(EMCMap map) {
+
+        Map<String, Player> online = map.Players.online();
+        Map<String, PlayerTime> onlinePlayers = new HashMap<>();
+        for (Map.Entry<String, Player> entry : online.entrySet()) {
+            if (!entry.getValue().underground()){
+                onlinePlayers.put(entry.getKey(), new PlayerTime(entry.getValue(), System.currentTimeMillis()));
+            }
+        }
+        return onlinePlayers;
     }
 }

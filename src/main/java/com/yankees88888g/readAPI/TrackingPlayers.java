@@ -25,6 +25,7 @@ public class TrackingPlayers {
 
     public static void trackPlayers(JDA jda, EMCMap map) {
         Map<String, PlayerTime> players = GsonUtil.deserialize(Cache.getFileContents("cache.json"), Cache.playerListType);
+        Map<String, PlayerTime> onlinePlayersData = GetPlayersData.getPlayersData(map);
 
         File directory = new File("discordUsers/");
 
@@ -45,25 +46,15 @@ public class TrackingPlayers {
                         List<String> tracking = ManageData.readData(file, "track");
                         if(tracking != null) {
                             for (String s : tracking) {
-                                if (players.containsKey(s)) {
-                                    Location location = players.get(s).getLocation();
+                                if (onlinePlayersData.containsKey(s)) {
+                                    stringBuilder.append(getLocationDataResponse(onlinePlayersData.get(s)));
+                                } else if (players.containsKey(s)) {
                                     if (!players.get(s).underground()) {
-                                        stringBuilder.append(players.get(s).getName()).append(" was last visualable at x= ")
+                                        stringBuilder.append(getLocationDataResponse(players.get(s)));
+                                        /*stringBuilder.append(players.get(s).getName()).append(" was last visualable at x= ")
                                                 .append(location.getX()).append(" y= ")
                                                 .append(location.getY()).append(" z= ")
-                                                .append(location.getZ()).append(" <t:").append(players.get(s).getUnix()).append(":R>").append("\n");
-                                    } else {
-                                        if (ManageData.readToggles(file, "unknownLocationUpdates")){
-                                            stringBuilder.append(players.get(s).getName())
-                                                .append(" is underground")
-                                                .append("\n");
-                                        } else {
-                                            PlayerTime playerTime = Cache.getFromCache(players.get(s).getName());
-                                            stringBuilder.append(playerTime.getName()).append(" was last visualable at x= ")
-                                                    .append(playerTime.getLocation().getX()).append(" y= ")
-                                                    .append(playerTime.getLocation().getY()).append(" z= ")
-                                                    .append(playerTime.getLocation().getZ()).append(" <t:").append(playerTime.getUnix()).append(":R>").append("\n");
-                                        }
+                                                .append(location.getZ()).append(" <t:").append(players.get(s).getUnix()).append(":R>").append("\n");*/
                                     }
                                 } else {
                                     stringBuilder.append(s).append(" is offline").append("\n");
@@ -82,19 +73,8 @@ public class TrackingPlayers {
 
     }
 
-
-
-
-
-
-    /*public static void mawin(EMCMap emc) throws MissingEntryException {
-        //Nation exampleNation = aurora.Nations.single("cuba");
-        for(int i = 0; i < 100; i++) {
-            Map<String, Player> playerMap = map.Players.get("yankees88888g");
-            Player player = playerMap.get("yankees88888g");
-            Coordinates coordinates = new Coordinates(player.getName(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.underground(),System.currentTimeMillis() / 1000);
-            System.out.println(coordinates.z);
-            //System.out.println(Aurora.Players.all());
-        }
-    }*/
+    public static String getLocationDataResponse(PlayerTime player) {
+        Location location = player.getLocation();
+        return player.getName() + " was last visualable at x= " + location.getX() + " y= " + location.getY() + " z= " + location.getZ() + " <t:" + player.getUnix() + ":R>" + "\n";
+    }
 }
