@@ -147,7 +147,7 @@ public class ManageData {
         return discordUser.discordID;
     }
 
-    public static void deleteData(User user, File usersFile, String type, String player) throws IOException {
+    public static String deleteData(User user, File usersFile, String type, String player) throws IOException {
         DiscordUser discordUser = deserializeUser(usersFile);
         switch (type) {
             case "track" -> discordUser.tracking.remove(player);
@@ -157,6 +157,7 @@ public class ManageData {
         try (FileWriter writer = new FileWriter(usersFile)) {
             writer.write(serializeUser(user.getId(), discordUser));
         }
+        return "Stopped " + type + "ing " + player;
     }
 
     private static DiscordUser deserializeUser(@NotNull File usersFile) {
