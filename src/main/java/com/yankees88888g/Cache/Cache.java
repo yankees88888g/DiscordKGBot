@@ -37,12 +37,13 @@ public class Cache {
                 if (!player.getLocation().isDefault())
                     playerMap.put(player.getName(), new PlayerTime(player, System.currentTimeMillis()));
         }
-        writeToFile(getFile().getPath(), GsonUtil.serialize(playerMap));
 
+        writeToFile(getFile().getPath(), GsonUtil.serialize(playerMap));
     }
 
     public static void updateCache(EMCMap map) throws IOException {
-        players = GsonUtil.deserialize(getFileContents("cache.json"), playerListType);
+        players = GetPlayersData.getCache();
+
         System.out.println("Updating cache");
         Map<String, Player> ops = map.Players.online();
 
@@ -50,6 +51,7 @@ public class Cache {
             if (!p.underground())
                 players.put(key, new PlayerTime(p, System.currentTimeMillis()));
             });
+
         //System.out.println(GsonUtil.serialize(players.get("yankees88888g")));
         writeToFile("cache.json", GsonUtil.serialize(players));
     }

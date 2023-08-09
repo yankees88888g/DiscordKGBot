@@ -3,10 +3,12 @@ package com.yankees88888g.readAPI;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yankees88888g.APIObjects.Coordinates;
+import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.Cache.PlayerTime;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.Location;
 import io.github.emcw.entities.Player;
+import io.github.emcw.utils.GsonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStreamReader;
@@ -42,6 +44,10 @@ public class GetPlayersData {
 
         return coordinatesMap;
     }*/
+
+    public static Map<String, PlayerTime> getCache() {
+         return GsonUtil.deserialize(Cache.getFileContents("cache.json"), Cache.playerListType);
+    }
 
     public static Map<String, PlayerTime> getPlayersData(EMCMap map) {
         Map<String, Player> online = map.Players.online();
