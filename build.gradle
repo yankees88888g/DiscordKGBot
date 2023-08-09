@@ -11,8 +11,8 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    var localProps = Properties()
-    localProps.load(FileInputStream(rootProject.file("bot.properties")))
+    def localProps = new Properties()
+    localProps.load(new FileInputStream(rootProject.file("bot.properties")))
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
