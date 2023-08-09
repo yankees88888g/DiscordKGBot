@@ -47,11 +47,9 @@ public class GetPlayersData {
         Map<String, Player> online = map.Players.online();
         Map<String, PlayerTime> onlinePlayers = new HashMap<>();
 
-        Set<Map.Entry<String, Player>> entries = online.entrySet();
-        for (Map.Entry<String, Player> entry : entries) {
-            Player p = entry.getValue();
-            if (!p.underground()){
-                onlinePlayers.put(entry.getKey(), new PlayerTime(p, System.currentTimeMillis()));
+        for (Player op : online.values()) {
+            if (!op.underground()) {
+                onlinePlayers.put(op.getName(), new PlayerTime(op, System.currentTimeMillis()));
             }
         }
 

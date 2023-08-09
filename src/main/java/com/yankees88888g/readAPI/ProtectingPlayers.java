@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 public class ProtectingPlayers {
 
@@ -68,26 +67,29 @@ public class ProtectingPlayers {
     }
 
     @NotNull
-    private static String findAllPlayersDistancesFromAPoint(Map<String, PlayerTime> playersCoordinates, Player protectingPlayer, int protectionRadius) {
+    private static String findAllPlayersDistancesFromAPoint(
+            @NotNull Map<String, PlayerTime> players,
+            @NotNull Player protectingPlayer,
+            int radius
+    ) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Location protectingPlayerLoc = protectingPlayer.getLocation();
-        String protectingPlayerName = protectingPlayer.getName();
-
-        Set<Map.Entry<String, PlayerTime>> entries = playersCoordinates.entrySet();
-        for (Map.Entry<String, PlayerTime> e : entries) {
-            Player curPlayer = e.getValue();
-            Location location = curPlayer.getLocation();
-
+        for (PlayerTime curPlayer : players.values()) {
             if (curPlayer.aboveGround()) {
-                if (!Objects.equals(curPlayer.getName(), protectingPlayerName)) {
+                String playerName = curPlayer.getName();
+                String protectingPlayerName = protectingPlayer.getName();
+
+                if (!Objects.equals(playerName, protectingPlayerName)) {
+                    Location location = curPlayer.getLocation();
+                    Location protectingPlayerLoc = protectingPlayer.getLocation();
+
                     int distance = MathUtil.findShortestDistance(
                             location.getX(), location.getZ(),
                             protectingPlayerLoc.getX(), protectingPlayerLoc.getZ()
                     );
 
-                    if (distance < protectionRadius) {
-                        stringBuilder.append(curPlayer.getName())
+                    if (distance < radius) {
+                        stringBuilder.append(playerName)
                                 .append(" is ")
                                 .append(distance)
                                 .append(" blocks away from ")
@@ -103,9 +105,9 @@ public class ProtectingPlayers {
             return listStr;
 
         return stringBuilder.append("No player is within ")
-                .append(protectionRadius)
+                .append(radius)
                 .append(" blocks of ")
-                .append(protectingPlayerName)
+                .append(protectingPlayer.getName())
                 .toString();
     }
 }
