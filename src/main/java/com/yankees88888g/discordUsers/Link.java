@@ -25,7 +25,10 @@ public class Link {
     @NotNull
     @Contract("_ -> new")
     public static File getFile(@NotNull User user){
-        return new File("discordUsers/" + user.getId() + ".json");
+        File file = new File("discordUsers/" + user.getId() + ".json");
+        if (file.exists())
+            return file;
+        return null;
     }
 
     private static boolean checkIfUsernameIsAlreadyBeingUsed(){

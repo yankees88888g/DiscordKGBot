@@ -112,7 +112,8 @@ public class Main extends ListenerAdapter {
     private void editData(@NotNull SlashCommandInteractionEvent event, String type, List<String> ids) {
         User user = event.getUser();
         File file = Link.getFile(user);
-
+        if (file == null)
+            event.reply("Link your discord to your minecraft account first").queue();
         try {
             OptionMapping option = event.getOption("username");
             String player = option == null ? null : option.getAsString();
