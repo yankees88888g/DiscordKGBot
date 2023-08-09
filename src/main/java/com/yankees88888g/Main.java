@@ -46,7 +46,6 @@ public class Main extends ListenerAdapter {
     static EMCMap map = new EMCMap("aurora", timed, lazy);
     public static void main(String[] args) throws InterruptedException, IOException {
 
-
         //EMCMap map = new EMCWrapper(true, false).getAurora();
         Properties properties = new Properties();
         properties.load(new FileInputStream("bot.properties"));
@@ -93,13 +92,13 @@ public class Main extends ListenerAdapter {
         ScheduledFuture<?> cacheFuture = scheduler.scheduleAtFixedRate(() -> {
             try {
                 Cache.updateCache(map);
-            } catch (IOException e) {throw new RuntimeException(e);}
+            } catch (IOException e) { throw new RuntimeException(e); }
         }, 0, delayInSeconds, TimeUnit.SECONDS);
 
         ScheduledFuture<?> mayorActivity = scheduler.scheduleAtFixedRate(() -> {
             try {
                 MayorActivity.mayorActivity(jda, townFallPredictionChannelId);
-            } catch (IOException e) {throw new RuntimeException(e);}
+            } catch (IOException e) { throw new RuntimeException(e); }
 
         }, 0, townPredictionDelayInHours, TimeUnit.HOURS);
         //getAllData();

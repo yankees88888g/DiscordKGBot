@@ -21,7 +21,7 @@ import java.util.Objects;
 public class ProtectingPlayers {
 
     public static void protectPlayers(JDA jda, EMCMap map) {
-        protectPlayers(jda, map,250);
+        protectPlayers(jda, map, 250);
     }
 
     public static void protectPlayers(JDA jda, EMCMap map, Integer radius) {
@@ -33,7 +33,7 @@ public class ProtectingPlayers {
 
         File[] files = directory.listFiles();
         if (files != null) {
-            Map<String, PlayerTime> players = GsonUtil.deserialize(Cache.getFileContents("cache.json"), Cache.playerListType);
+            Map<String, PlayerTime> players = GetPlayersData.getCache();
 
             // Process each file in the directory
             for (File file : files) {
@@ -58,7 +58,9 @@ public class ProtectingPlayers {
                             }
                             BotActions.sendDMUpdates(jda, id, stringBuilder.toString(), file, ManageData.readToggles(file, "toggleableEditing"), "protect");
                         }
-                    } catch (IOException e) { throw new RuntimeException(e); }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         } else {
@@ -67,20 +69,32 @@ public class ProtectingPlayers {
     }
 
     @NotNull
-    private static String findAllPlayersDistancesFromAPoint(Map<String, PlayerTime> playersCoordinates, Player protectingPlayer, int protectionRadius) {
+    private static String findAllPlayersDistancesFromAPoint(
+            @NotNull Map<String, PlayerTime> players,
+            @NotNull Player protectingPlayer,
+            int radius
+    ) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, PlayerTime> i : playersCoordinates.entrySet()) {
-            Location location = i.getValue().getLocation();
-            if (i.getValue().aboveGround()) {
-                if (!Objects.equals(i.getValue().getName(), protectingPlayer.getName())) {
-                    int distance = MathUtil.findShortestDistance(location.getX(), location.getZ(), protectingPlayer.getLocation().getX(), protectingPlayer.getLocation().getZ());
-                    if (distance < protectionRadius)
-                        stringBuilder.append(i.getValue().getName())
-                                .append(" is ")
-                                .append(distance)
-                                .append(" blocks away from ")
-                                .append(protectingPlayer.getName())
-                                .append("\n");
+
+        for (PlayerTime currentPlayer : players.values()) {
+            String playerName = currentPlayer.getName();
+            String protectingPlayerName = protectingPlayer.getName();
+
+            if (!Objects.equals(playerName, protectingPlayerName)) {
+                Location location = currentPlayer.getLocation();
+                Location protectingPlayerLoc = protectingPlayer.getLocation();
+
+                int distance = MathUtil.findShortestDistance(
+                        location.getX(), location.getZ(),
+                        protectingPlayerLoc.getX(), protectingPlayerLoc.getZ()
+                );
+                if (distance < radius) {
+                    stringBuilder.append(playerName)
+                            .append(" is ")
+                            .append(distance)
+                            .append(" blocks away from ")
+                            .append(protectingPlayerName)
+                            .append("\n");
                 }
             }
         }
@@ -90,7 +104,7 @@ public class ProtectingPlayers {
             return listStr;
 
         return stringBuilder.append("No player is within ")
-                .append(protectionRadius)
+                .append(radius)
                 .append(" blocks of ")
                 .append(protectingPlayer.getName())
                 .toString();

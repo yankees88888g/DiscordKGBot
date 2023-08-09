@@ -3,10 +3,12 @@ package com.yankees88888g.readAPI;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yankees88888g.APIObjects.Coordinates;
+import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.Cache.PlayerTime;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.Location;
 import io.github.emcw.entities.Player;
+import io.github.emcw.utils.GsonUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStreamReader;
@@ -15,6 +17,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GetPlayersData {
     /*static Gson gson = new Gson();
@@ -42,15 +45,20 @@ public class GetPlayersData {
         return coordinatesMap;
     }*/
 
-    public static Map<String, PlayerTime> getPlayersData(EMCMap map) {
+    public static Map<String, PlayerTime> getCache() {
+         return GsonUtil.deserialize(Cache.getFileContents("cache.json"), Cache.playerListType);
+    }
 
+    public static Map<String, PlayerTime> getPlayersData(EMCMap map) {
         Map<String, Player> online = map.Players.online();
         Map<String, PlayerTime> onlinePlayers = new HashMap<>();
-        for (Map.Entry<String, Player> entry : online.entrySet()) {
-            if (!entry.getValue().underground()){
-                onlinePlayers.put(entry.getKey(), new PlayerTime(entry.getValue(), System.currentTimeMillis()));
+
+        for (Player op : online.values()) {
+            if (!op.underground()) {
+                onlinePlayers.put(op.getName(), new PlayerTime(op, System.currentTimeMillis()));
             }
         }
+
         return onlinePlayers;
     }
 }

@@ -23,7 +23,7 @@ public class TrackingPlayers {
     static EMCWrapper emc = new EMCWrapper();
 
     public static void trackPlayers(JDA jda, EMCMap map) {
-        Map<String, PlayerTime> players = GsonUtil.deserialize(Cache.getFileContents("cache.json"), Cache.playerListType);
+        Map<String, PlayerTime> players = GetPlayersData.getCache();
         Map<String, PlayerTime> onlinePlayersData = GetPlayersData.getPlayersData(map);
 
         File directory = new File("discordUsers/");

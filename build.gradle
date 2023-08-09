@@ -1,7 +1,3 @@
-import org.gradle.internal.io.RandomAccessFileInputStream
-import java.io.FileInputStream
-import java.util.*
-
 plugins {
     id("java")
 }
@@ -9,16 +5,24 @@ plugins {
 group = "com.yankees88888g"
 version = "1.0-SNAPSHOT"
 
+def botProps = new Properties()
+File propsFile = file("bot.properties")
+
+var fileExists = false;
+if (propsFile.isFile()) {
+    fileExists = true;
+    propsFile.withInputStream { botProps.load(it) }
+}
+
 repositories {
     mavenCentral()
-    var localProps = Properties()
-    localProps.load(FileInputStream(rootProject.file("bot.properties")))
+
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
         credentials {
-            username = localProps.getProperty("username")
-            password = localProps.getProperty("githubToken")
+            username = fileExists ? botProps.getProperty("username") : System.getenv('USERNAME')
+            password = fileExists ? botProps.getProperty("githubToken") : System.getenv("GITHUB_TOKEN")
         }
     }
 }

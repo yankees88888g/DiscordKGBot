@@ -2,15 +2,18 @@
 An open source Discord bot for tracking and protecting players on [EarthMC](https://earthmc.net).
 
 ## Installation
-create a file bot.properties with the following.
+Create a `bot.properties` file and add the following:
 
-USERNAME=githubUsername\
-GITHUB_TOKEN=github token\
-token=bot token\
-townFlowChannelId=town flow channel id nullable\
-townFallPredictionChannelId=predictor\
-protectionRadius=protection radius
+```bash
+USERNAME="yourGithubName"
+GITHUB_TOKEN="yourToken"
+token="yourBotToken"
+townFlowChannelId="channelID"
+townFallPredictionChannelId="channelID"
+protectionRadius="50"
+```
 
 ## Usage
 
 ## Support
+If you are stuck or have suggestions, you can join the [KGB Discord](https://discord.gg/Hjwv7CF6Et) where I can help you further.
