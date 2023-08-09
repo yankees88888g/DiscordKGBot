@@ -21,7 +21,7 @@ import java.util.Objects;
 public class ProtectingPlayers {
 
     public static void protectPlayers(JDA jda, EMCMap map) {
-        protectPlayers(jda, map,250);
+        protectPlayers(jda, map, 250);
     }
 
     public static void protectPlayers(JDA jda, EMCMap map, Integer radius) {
@@ -58,7 +58,9 @@ public class ProtectingPlayers {
                             }
                             BotActions.sendDMUpdates(jda, id, stringBuilder.toString(), file, ManageData.readToggles(file, "toggleableEditing"), "protect");
                         }
-                    } catch (IOException e) { throw new RuntimeException(e); }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         } else {
@@ -74,28 +76,25 @@ public class ProtectingPlayers {
     ) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (PlayerTime curPlayer : players.values()) {
-            if (curPlayer.aboveGround()) {
-                String playerName = curPlayer.getName();
-                String protectingPlayerName = protectingPlayer.getName();
+        for (PlayerTime currentPlayer : players.values()) {
+            String playerName = currentPlayer.getName();
+            String protectingPlayerName = protectingPlayer.getName();
 
-                if (!Objects.equals(playerName, protectingPlayerName)) {
-                    Location location = curPlayer.getLocation();
-                    Location protectingPlayerLoc = protectingPlayer.getLocation();
+            if (!Objects.equals(playerName, protectingPlayerName)) {
+                Location location = currentPlayer.getLocation();
+                Location protectingPlayerLoc = protectingPlayer.getLocation();
 
-                    int distance = MathUtil.findShortestDistance(
-                            location.getX(), location.getZ(),
-                            protectingPlayerLoc.getX(), protectingPlayerLoc.getZ()
-                    );
-
-                    if (distance < radius) {
-                        stringBuilder.append(playerName)
-                                .append(" is ")
-                                .append(distance)
-                                .append(" blocks away from ")
-                                .append(protectingPlayerName)
-                                .append("\n");
-                    }
+                int distance = MathUtil.findShortestDistance(
+                        location.getX(), location.getZ(),
+                        protectingPlayerLoc.getX(), protectingPlayerLoc.getZ()
+                );
+                if (distance < radius) {
+                    stringBuilder.append(playerName)
+                            .append(" is ")
+                            .append(distance)
+                            .append(" blocks away from ")
+                            .append(protectingPlayerName)
+                            .append("\n");
                 }
             }
         }

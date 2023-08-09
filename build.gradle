@@ -21,8 +21,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/earthmc-toolkit/earthmc-wrapper")
         credentials {
-            username = fileExists ? botProps.getProperty("USERNAME") : System.getenv('USERNAME')
-            password = fileExists ? botProps.getProperty("GITHUB_TOKEN") : System.getenv("GITHUB_TOKEN")
+            username = fileExists ? botProps.getProperty("username") : System.getenv('USERNAME')
+            password = fileExists ? botProps.getProperty("githubToken") : System.getenv("GITHUB_TOKEN")
         }
     }
 }

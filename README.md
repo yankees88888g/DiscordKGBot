@@ -16,4 +16,4 @@ protectionRadius="50"
 ## Usage
 
 ## Support
-If you are stuck or have suggestions, you can join the [KGB Discord]() where I can help you further.
+If you are stuck or have suggestions, you can join the [KGB Discord](https://discord.gg/Hjwv7CF6Et) where I can help you further.
