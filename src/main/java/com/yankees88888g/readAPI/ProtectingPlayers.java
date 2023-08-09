@@ -33,7 +33,7 @@ public class ProtectingPlayers {
 
         File[] files = directory.listFiles();
         if (files != null) {
-            Map<String, PlayerTime> players = GsonUtil.deserialize(Cache.getFileContents("cache.json"), Cache.playerListType);
+            Map<String, PlayerTime> players = GetPlayersData.getCache();
 
             // Process each file in the directory
             for (File file : files) {
