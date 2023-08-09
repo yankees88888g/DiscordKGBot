@@ -5,13 +5,13 @@ plugins {
 group = "com.yankees88888g"
 version = "1.0-SNAPSHOT"
 
-def props = new Properties()
-File botProps = file("bot.properties")
+def botProps = new Properties()
+File propsFile = file("bot.properties")
 
 var fileExists = false;
-if (botProps.isFile()) {
+if (propsFile.isFile()) {
     fileExists = true;
-    botProps.withInputStream { props.load(it) }
+    propsFile.withInputStream { botProps.load(it) }
 }
 
 repositories {
