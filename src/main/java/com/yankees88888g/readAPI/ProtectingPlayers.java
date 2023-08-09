@@ -3,7 +3,7 @@ package com.yankees88888g.readAPI;
 import com.yankees88888g.BotActions;
 import com.yankees88888g.Cache.Cache;
 import com.yankees88888g.Cache.PlayerTime;
-import com.yankees88888g.MathUtil;
+import com.yankees88888g.Util.MathUtil;
 import com.yankees88888g.discordUsers.ManageData;
 import io.github.emcw.core.EMCMap;
 import io.github.emcw.entities.Location;

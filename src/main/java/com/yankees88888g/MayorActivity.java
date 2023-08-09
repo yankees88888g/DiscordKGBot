@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.JDA;
 import java.io.IOException;
 import java.util.*;
 
-import static com.yankees88888g.MathUtil.*;
+import static com.yankees88888g.Util.MathUtil.*;
 
 public class MayorActivity {
     public static void mayorActivity(JDA jda, String channelId) throws IOException {

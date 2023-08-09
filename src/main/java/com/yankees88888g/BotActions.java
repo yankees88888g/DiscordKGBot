@@ -16,7 +16,6 @@ public class BotActions {
     public static List<String> sendDMUpdates(JDA jda, String userId, String message, File file, Boolean editMessage, String type) throws IOException {
         System.out.println(message);
         if(file != null) {
-            //boolean editMessage = ManageData.readToggles(file, "toggleableEditing");
             if (!editMessage) {
                 jda.retrieveUserById(userId).queue(recipientUser -> {
                     System.out.println(recipientUser);
