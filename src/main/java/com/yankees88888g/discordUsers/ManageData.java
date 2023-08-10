@@ -159,6 +159,9 @@ public class ManageData {
         }
         return "Stopped " + type + "ing " + player;
     }
+    public static DiscordUser getUser(@NotNull File usersFile) {
+        return deserializeUser(usersFile);
+    }
 
     private static DiscordUser deserializeUser(@NotNull File usersFile) {
         try {
